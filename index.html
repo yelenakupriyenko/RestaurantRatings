@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Yelp Visualization</title>
+
+    <script src="js/libraries/jquery.js"></script>
+    <script src="js/libraries/bootstrap.min.js"></script>
+    <script scr='js/libraries/d3.layout.cloud.js'></script>
+    <script src="js/libraries/d3.min.js" charset="utf-8"></script>
+    <script src="js/libraries/d3-queue.v2.min.js" charset="utf-8"></script>
+    
+    <script src="js/choropleth.js" charset="utf-8"></script>
+    <script src="js/vis_two.js" charset="utf-8"></script>
+    <script src="js/listener_manager.js" charset="utf-8"></script>
+    <script src="js/filter_manager.js" charset="utf-8"></script>
+    <script src="js/main.js" charset="utf-8"></script>
+    <script scr='js/wordle.js' charset="utf-8"></script>
+
+    <link href="style/css/bootstrap.min.css" rel="stylesheet">
+    <link href="style/css/simple-sidebar.css" rel="stylesheet">
+    <link href="style/css/custom.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="#">Start Bootstrap</a>
+                </li>
+                <li>
+                  <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12" id="vis1"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6" id="vis2"></div>
+                    <div class="col-md-6" id="vis3"></div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
+
+</body>
+
+</html>

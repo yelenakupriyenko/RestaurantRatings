@@ -1,0 +1,11 @@
+html, body, div#wrapper, div#page-content-wrapper, div.container-fluid {
+  height: 100%;
+}
+
+div.row {
+  height: 50%;
+}
+
+div.row > div {
+  height: 100%;
+}
