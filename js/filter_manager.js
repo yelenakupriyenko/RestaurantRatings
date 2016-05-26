@@ -23,9 +23,12 @@ DataFilter.prototype.initListenerHandler = function() {
 };
 
 DataFilter.prototype.filterOnDistrict = function(districtId) {
+    console.log(districtId)
+    console.log("pressed filter by region 1", this.filteredData)
     this.filteredData = this.filteredData.filter(function(item) {
         return item.district_id == districtId;
     });
+    console.log("pressed filter by region 2", this.filteredData)
     SH.listenerMap['dataFiltered'].fire();
 };
 

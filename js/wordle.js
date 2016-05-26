@@ -5,12 +5,14 @@ Wordle = function(main, parent, dataFilter) {
 
     this.initListenerHandler();
     this.initVisualization();
-    //this.visualize();
+    this.update();
+    
+    
 };
 
 Wordle.prototype.initListenerHandler = function() {
     var handler = function(e) {
-        this.initVisualization()
+        this.update()
     }.bind(this);
 
     SH.listenerMap['dataFiltered'].subscribe(handler);
@@ -24,14 +26,14 @@ Wordle.prototype.initListenerHandler = function() {
 //            }
 //        }
 
- Wordle.prototype.initVisualization = function(dataFilter) {
+ Wordle.prototype.initVisualization = function() {
 
     //--------------------------------------------------------------
     //                    DATA PREPROCESSING
     //--------------------------------------------------------------
-    console.log(this.dataFilter.filteredData)
+    //console.log(this.dataFilter.filteredData)
     
-    (this.dataFilter.filteredData).forEach(function(d) {
+    this.dataFilter.filteredData.forEach(function(d) {
         d.rating = parseFloat(d.rating);
         d.review_count = parseInt(d.review_count);
         d.district_id = parseInt(d.district_id);
@@ -80,17 +82,18 @@ Wordle.prototype.initListenerHandler = function() {
     //by Julien Renaux.
 
     // define svg width and height
-    // var w = $(this.parent).width();
-    // var h = $(this.parent).height();
+     var w = $(this.parent).width();
+     var h = $(this.parent).height()*0.7;
 
-    var w = window.innerWidth,
-        h = 0.7*window.innerHeight;
+//    var w = window.innerWidth,
+//        h = 0.7*window.innerHeight;
 
     var max,
         fontSize;
 
     var fill = d3.scale.category20b();
-
+     
+    
     var layout = d3.layout.cloud()
             .timeInterval(Infinity)
             .size([w, h])
@@ -102,15 +105,19 @@ Wordle.prototype.initListenerHandler = function() {
             })
             .on("end", draw);
 
+    this.layout = layout; 
+     
     var svg = d3.select(this.parent).append("svg")
             .attr("width", w)
             .attr("height", h);
 
     var vis = svg.append("g").attr("transform", "translate(" + [w >> 1, h >> 1] + ")");
+    
+    this.vis = vis
 
     function update(){
         layout.font('impact').spiral('archimedean');
-        fontSize = d3.scale['pow']().range([10, 80]);
+        fontSize = d3.scale['pow']().range([5, 50]);
 
         if (rest_type_number.length){
             fontSize.domain([d3.min(rest_type_number, function (d){return d.values}) ||
@@ -123,7 +130,7 @@ Wordle.prototype.initListenerHandler = function() {
 
     function draw(data, bounds) {
 
-        console.log(bounds)
+        //console.log(bounds)
         scale = bounds ? Math.min(
                 w / Math.abs(bounds[1].x - w / 1.5),
                 w / Math.abs(bounds[0].x - w / 1.5),
@@ -141,13 +148,13 @@ Wordle.prototype.initListenerHandler = function() {
 
         var text_drawn = text.enter().append("text")
             .attr("text-anchor", "middle")
-            .attr("class", function (d,i){ return "word"+ i;})
+            .attr("class", function (d,i){ return "word"+d.values+d.key.replace(/[^0-9a-zA-Z]+/g,'');})
             .attr("transform", function(d) {
                 return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";})
             .style("font-size", function(d) {return d.size + "px";})
             .style("opacity", 1)
-            .on("mouseover", hightlight)
-            .on('mouseleave', dehightlight);
+            .on("mouseover", hightlight_word)
+            .on('mouseleave', dehightlight_word);
 
 //                text_drawn.transition()
 //                    .duration(1000)
@@ -165,13 +172,13 @@ Wordle.prototype.initListenerHandler = function() {
     //                     HISTOGRAM
     //--------------------------------------------------------------
 
-    var w_hist = window.innerWidth,
-        h_hist = 0.3*window.innerHeight,
+    var w_hist = $(this.parent).width(),
+        h_hist = $(this.parent).height()*0.3,
         margin = {top: 20, bottom: 20, left:20, right:20},
 
         padding = 1
 
-    var svg_hist = d3.select("#hist").append("svg")
+    var svg_hist = d3.select(this.parent).append("svg")
         .attr("width", w_hist)
         .attr("height", h_hist)
 
@@ -189,11 +196,11 @@ Wordle.prototype.initListenerHandler = function() {
             if (d.values >= 0.1*max_val)
                 {return d;}})
 
-    console.log(fil_data)
+    //console.log(fil_data)
 
     var bar_width = Math.floor((w_hist-margin.left - margin.right)/fil_data.length)
 
-    vis_hist.selectAll("rect")
+    var rec = vis_hist.selectAll("rect")
         .data(fil_data)
         .enter()
         .append("rect")
@@ -203,7 +210,10 @@ Wordle.prototype.initListenerHandler = function() {
         .attr("width", bar_width - padding)
         .attr("height", function (d){return (h_hist - margin.top - margin.bottom) - yScale(d.values);})
         .attr("fill", "#a3a3a3")
-        .transition()
+        .on("mouseover", hightlight_rec)
+        .on('mouseleave', dehightlight_rec);
+    
+    rec.transition()
             .duration(2000)
             .style("opacity", 1)
 
@@ -224,7 +234,7 @@ Wordle.prototype.initListenerHandler = function() {
     //                   INTERACTION BETWEEN THEM
     //--------------------------------------------------------------
 
-    function hightlight(e,i){
+    function hightlight_word(e,i){
         //console.log(e)
         //console.log(".rect"+e.values+e.key.replace(/[^0-9a-zA-Z]+/g,''))
 
@@ -239,9 +249,9 @@ Wordle.prototype.initListenerHandler = function() {
         //console.log(this)
         d3.select(this)
             .style("font-size", function (e){return 1.5*e.size + "px";})
-    }
+    }    
 
-    function dehightlight(e,i){
+    function dehightlight_word(e,i){
         //console.log(e)
 
         d3.select(".rect"+e.values+e.key.replace(/[^0-9a-zA-Z]+/g,''))
@@ -251,6 +261,44 @@ Wordle.prototype.initListenerHandler = function() {
         //console.log(this)
         d3.select(this)
             .style("font-size", function (e){return e.size + "px";})
-    }
+    }  
 
+    function hightlight_rec(e,i){
+        //console.log(e)
+        //console.log(".rect"+e.values+e.key.replace(/[^0-9a-zA-Z]+/g,''))
+
+        d3.select(".word"+e.values+e.key.replace(/[^0-9a-zA-Z]+/g,''))
+            .style("font-size", function (e){return 1.5*e.size + "px";})
+
+        d3.select(".text"+e.values +e.key.replace(/[^0-9a-zA-Z]+/g,''))
+            .attr("fill", "black")
+
+        //console.log(this)
+        d3.select(this)
+            .attr("fill", "yellow")
+            .attr('stroke-width', 5)
+            .attr("stroke", "yellow");
+    }    
+
+    function dehightlight_rec(e,i){
+        //console.log(e)
+
+        var word = d3.select(".word"+e.values+e.key.replace(/[^0-9a-zA-Z]+/g,''))
+
+        word.style("font-size", function (e){return e.size + "px";})
+
+        d3.select(this)
+            .attr("fill", word[0][0].style.fill)
+            .attr('stroke-width', 0);
+    }
 }
+
+     //--------------------------------------------------------------
+    //                   UPDATE FUNCTION
+    //--------------------------------------------------------------
+ 
+ 
+ Wordle.prototype.update = function(){
+ 
+    }
+ 

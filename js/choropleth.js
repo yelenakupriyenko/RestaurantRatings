@@ -101,7 +101,6 @@ Choropleth.prototype.initVisualization = function(geoJson) {
 
 Choropleth.prototype.visualize = function() {
     console.log("visualize");
-
     // calculate mean ratings for districts
     var meanRatings = d3.nest()
         .key(function(d) {
