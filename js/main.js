@@ -24,6 +24,6 @@ function ready(error, geoJson, yelpData) {
     // create visualizations
     var choropleth = new Choropleth(this, '#vis1', geoJson, dataFilter);
     var wordCloud = new Wordle(this, '#vis2', dataFilter);
-    var scatterPlot = new ScatterPlot(this, '#vis3', dataFilter);
+    var scatterPlot = new Scatterplot(this, '#vis3', dataFilter);
     
 }

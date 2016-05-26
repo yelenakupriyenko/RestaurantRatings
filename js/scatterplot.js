@@ -16,9 +16,10 @@ Scatterplot.prototype.initListenerHandler = function() {
 	SH.listenerMap['dataFiltered'].subscribe(handler);
 };
 
-Scatterplot.prototype.initVisualization = function(handler) {
+Scatterplot.prototype.initVisualization = function() {
  // data preprocessing
-console.log(this.dataFilter)
+// console.log(this.dataFilter)
+
 (this.dataFilter.filteredData).forEach(function(d) {
 d.rating = parseFloat(d.rating);
 d.review_count = parseInt(d.review_count);
@@ -35,7 +36,7 @@ console.log("Initial data", district_data);
 var grouped_data = d3.nest()
 	.key(function(d,i) {
 	    if(d.review_count <= Math.ceil(d.review_count/100)*100 && d.review_count >=
-                                       Math.floor(d.review_count/100)|*100){
+                                       Math.floor(d.review_count/100)*100){
                                        return Math.ceil(d.review_count/100)*100;
         }})
     .rollup(function(v) { return {
@@ -50,7 +51,7 @@ var scatterplot_data = []
 for (i=0; i<grouped_data.length;i++){
      var val = grouped_data[i].values;
      scatterplot_data.push(
-     [parseInt(test_data[i].key, val.avg_rating, val.number_of_rest]
+     [parseInt(grouped_data[i].key, val.avg_rating, val.number_of_rest)])
 }
 console.log(scatterplot_data);
 
@@ -120,11 +121,11 @@ console.log(scatterplot_data);
       .enter().append("svg:circle")
           .attr("cx", function (d,i) { return x(d[0]); } )
           .attr("cy", function (d) { return y(d[1]); } )
-          .attr("r", function (d) { return d[2] * 2; });
+          .attr("r", function (d) { return d[2] * 2; }); };
 
-	$('svg circle').tipsy( {
-      gravity: 'w',
-      html: true,
-      title: function() {
-        var d = this.__scatterplot_data__, d = d[2];
-         };
+	//$('svg circle').tipsy( {
+      //gravity: 'w',
+      //html: true,
+      //title: function() {
+      //       var d = this.__scatterplot_data__, d = d[2];
+//         };
