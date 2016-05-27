@@ -105,6 +105,7 @@ console.log("Scatterplot data", scatterplot_data);
 	.scale(y)
 	.orient('left').ticks(10).tickFormat(function (i, d) { 		return ['<100', '101-200', '201-300', '301-400', '401-500', '501-600', '601-700', '701-800', '801-900', '>900'][d]; });
 
+	
     main.append('g')
 	.attr('transform', 'translate(0,0)')
 	.attr('class', 'main axis date')
