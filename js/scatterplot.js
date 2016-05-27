@@ -57,9 +57,9 @@ console.log("Scatterplot data", scatterplot_data);
 
 // define svg width and height
     var w = $(this.parent).width();
-    var h = $(this.parent).height()*0.7;
+    var h = $(this.parent).height();
 
-    var margin = {top: 60, right: 100, bottom: 60, left: 60},
+    var margin = {top: 10, right: 100, bottom: 60, left: 60},
     width = w,
     height = h;
     
@@ -71,7 +71,7 @@ console.log("Scatterplot data", scatterplot_data);
     	      .domain([0, d3.max(scatterplot_data, function(d) { return d[0]; })])
     	      .range([ height, 0 ]);
  
-    var chart = d3.select('body')
+    var chart = d3.select(this.parent)
 	.append('svg:svg')
 	.attr('width', width + margin.right + margin.left)
 	.attr('height', height + margin.top + margin.bottom)
@@ -125,7 +125,7 @@ console.log("Scatterplot data", scatterplot_data);
       .enter().append("svg:circle")
           .attr("cx", function (d,i) { return x(d[2]); } )
           .attr("cy", function (d) { return y(d[0]); } )
-          .attr("r", function (d) { return d[1] * 2; }); };
+          .attr("r", function (d) { return d[1]; }); };
 
 	//$('svg circle').tipsy( {
       //gravity: 'w',
