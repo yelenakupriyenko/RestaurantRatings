@@ -16,11 +16,11 @@ Scatterplot.prototype.initListenerHandler = function() {
     SH.listenerMap['dataFiltered'].subscribe(handler);
 };
 
-Scatterplot.prototype.update = function() {};
+Scatterplot.prototype.initVisualization = function() {};
 
 Scatterplot.prototype.update = function() {
 		if ($(parent).find('svg')) {
-			$(parent).find('svg').remove():
+			$(parent).find('svg').remove();
 		}
 
     (this.dataFilter.filteredData).forEach(function(d) {
@@ -152,6 +152,13 @@ Scatterplot.prototype.update = function() {
         })
         .attr("r", function(d) {
             return d[1];
+        })
+        .on('mouseover', function(d) {
+            d3.select(this)
+              .append('title')
+              .text((d,i) => {
+                  return 'Mean rating: ' + grouped_data.avg_rating;
+              });
         });
 };
 
