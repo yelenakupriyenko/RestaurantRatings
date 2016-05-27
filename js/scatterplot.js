@@ -40,31 +40,35 @@ var grouped_data = d3.nest()
                                        return Math.ceil(d.review_count/100)*100;
         }})
     .rollup(function(v) { return {
-       avg_rating: d3.mean(v, function (d) { return d.rating;}),
+       avg_rating: Math.round((d3.mean(v, function (d) { return d.rating;}))*1000)/1000,
        number_of_rest: v.length
        };})
-    .entries(district_data);
-console.log(grouped_data);
+    .entries(this.dataFilter.filteredData);
+console.log("Grouped data", grouped_data);
 
 // data that will be used for scatter plot: array of arrays
 var scatterplot_data = []
 for (i=0; i<grouped_data.length;i++){
      var val = grouped_data[i].values;
      scatterplot_data.push(
-     [parseInt(grouped_data[i].key, val.avg_rating, val.number_of_rest)])
+     [parseInt(grouped_data[i].key), val.avg_rating, val.number_of_rest])
 }
-console.log(scatterplot_data);
+console.log("Scatterplot data", scatterplot_data);
 
-    var margin = {top: 60, right: 60, bottom: 60, left: 60},
-      width = 960 - margin.left - margin.right,
-      height = 960 - margin.top - margin.bottom;
+// define svg width and height
+    var w = $(this.parent).width();
+    var h = $(this.parent).height()*0.7;
+
+    var margin = {top: 60, right: 100, bottom: 60, left: 60},
+    width = w,
+    height = h;
     
     var x = d3.scale.linear()
-              .domain([0, d3.max(scatterplot_data, function(d) { return d[0]; })])
+              .domain([0, d3.max(scatterplot_data, function(d) { return d[2]; })])
               .range([ 0, width ]);
     
     var y = d3.scale.linear()
-    	      .domain([0, d3.max(scatterplot_data, function(d) { return d[1]; })])
+    	      .domain([0, d3.max(scatterplot_data, function(d) { return d[0]; })])
     	      .range([ height, 0 ]);
  
     var chart = d3.select('body')
@@ -119,9 +123,9 @@ console.log(scatterplot_data);
     g.selectAll("scatter-dots")
       .data(scatterplot_data)
       .enter().append("svg:circle")
-          .attr("cx", function (d,i) { return x(d[0]); } )
-          .attr("cy", function (d) { return y(d[1]); } )
-          .attr("r", function (d) { return d[2] * 2; }); };
+          .attr("cx", function (d,i) { return x(d[2]); } )
+          .attr("cy", function (d) { return y(d[0]); } )
+          .attr("r", function (d) { return d[1] * 2; }); };
 
 	//$('svg circle').tipsy( {
       //gravity: 'w',
